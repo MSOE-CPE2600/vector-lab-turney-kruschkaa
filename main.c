@@ -1,19 +1,30 @@
-// Potential Inputs:
-// >a = 1 1 1
-// >b = 1 2 3
-// >c = a + b
-// >a + b
-// >a
-// >d = a - b (optional)
-// >e = e . b (optional)
-// >f = a x b
-// >g = 10 * a
-// >list
-// >clear
-// >help
-// >quit
-
-// Note: Compile with gcc main.c vect.c -Wall -o minivec
+/**
+ * @file main.c
+ * @brief Main program to run minivec program, taking user input, assigning vectors, and calling vector math functions
+ * 
+ * Course: CPE2600
+ * Section: 111
+ * Assignment: Lab 5
+ * Name: Alexander Kruschka
+ * Date: 10/07/2025
+ * Note: Compile with gcc main.c vect.c -Wall -o minivec OR make
+ * 
+ * Algorithm:
+ * - Initiate values and variables
+ * - If called with -h, print help and end program
+ * - While user has not indicated to quit:
+ *  - Declare and reset variable values
+ *  - Get user input and parse it into an array
+ *  - If just on value and is the name of a vector, print that vector
+ *  - If custom word command, perform the function
+ *  - Otherwise, assume vector assignment or math
+ *   - Parse user input depending on input structure with operators
+ *   - Assign resultant each argument as a float assuming no overriding
+ *   - Check if each operation and perform corresponding math if needed
+ *   - Add vector to new or overriding position is '=' is invoked
+ *   - Print the resultant
+ * - End program when user enters 'quit'
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -231,9 +242,13 @@ int main(int argc, char *argv[])
                 else
                 {
                     vects[vector_index] = resultant;
-                    if (vector_index < TOTAL_VECTORS)
+                    
+                    // If full, do not increment and overwrite the 10th vector with resultant
+                    if (vector_index < TOTAL_VECTORS - 1)
                     {
                         vector_index++;
+                    } else {
+                        printf("Warning: Max vectors have been reached; writing over 10th vector.\n");
                     }
                 }
             }
