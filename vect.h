@@ -82,7 +82,7 @@ vect scalarmult(char name[30], vect a, double scalar);
  * @param name Name of the vector to return
  * @param a The first vector to put in dot equation
  * @param b The second vector to put in dot equation
- * @return The result of the operation in the x component
+ * @return The result of the dot operation in the x component
  */
 vect dotvec(char name[30], vect a, vect b);
 
@@ -91,7 +91,7 @@ vect dotvec(char name[30], vect a, vect b);
  * @param name Name of the vector to return
  * @param a The first vector to put in cross vector equation
  * @param b The second vector to put in cross vector equation
- * @return The resultant vector of the cross
+ * @return The resultant vector of the cross product
  */
 vect crossvec(char name[30], vect a, vect b);
 
