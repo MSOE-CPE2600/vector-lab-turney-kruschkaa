@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-c -Wall
-LDFLAGS=-lm
+LDFLAGS=-lm -g
 SOURCES= main.c vect.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=minivec

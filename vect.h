@@ -41,7 +41,7 @@ vect newvec(char name[30], float x, float y, float z);
  * @param total_vectors The number of vectors to search through
  * @return The index of the vector in the array or -1 if not found
  */
-int getvec(char name[30], vect vects[10], int total_vectors);
+int getvec(char name[30], vect *vects, int total_vectors);
 
 /**
  * @brief Prints the individual components of a given array

@@ -29,7 +29,7 @@ vect newvec(char name[30], float x, float y, float z)
     return newVector;
 }
 
-int getvec(char name[30], vect vects[10], int total_vectors)
+int getvec(char name[30], vect *vects, int total_vectors)
 {
     // Initialize index to -1, assuming it doesn't find vector in array
     int vectIndex = -1;

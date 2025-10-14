@@ -7,7 +7,7 @@
  * Assignment: Lab 5
  * Name: Alexander Kruschka
  * Date: 10/07/2025
- * Note: Compile with gcc main.c vect.c -Wall -o minivec OR make
+ * Note: Compile with gcc main.c vect.c -g -s -Wall -o minivec OR make
  * 
  * Algorithm:
  * - Initiate values and variables
@@ -31,14 +31,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "vect.h"
-#define TOTAL_VECTORS 10
+#include "input_parsing.h"
 
 int main(int argc, char *argv[])
 {
     // Declaring general variables and vector array
-    static vect vects[TOTAL_VECTORS];
+    vect *vects = (vect *)malloc(sizeof(vect));
     bool quit = false;
-    int vector_index = 0;
+    int total_vects = 0;
 
     // If invoked with -h, print help and exit program immediately
     if (argc > 1 && !strcmp(argv[1], "-h"))
@@ -91,7 +91,9 @@ int main(int argc, char *argv[])
         if (!strcmp(args[0], "quit"))
         {
             printf("Exiting program.\n");
+            free(vects);
             quit = true;
+            continue;
         }
         
         // Display help when user enters 'help'
@@ -103,15 +105,15 @@ int main(int argc, char *argv[])
         // List all ten vectors when 'list' is entered
         if (!strcmp(args[0], "list"))
         {
-            list(vects, TOTAL_VECTORS);
+            list(vects, total_vects);
         }
         
         // Clear and reset all vectors when 'clear' is entered as well as current vector index tracker in array
         if (!strcmp(args[0], "clear"))
         {
             printf("Clearing vectors.\n");
-            clear(vects, TOTAL_VECTORS);
-            vector_index = 0;
+            clear(vects, total_vects);
+            total_vects = 0;
         }
         
         // Handle all other user commands involving vectors while not exiting program
@@ -122,23 +124,23 @@ int main(int argc, char *argv[])
             {
                 // Gather equation data using the template: a = b OP c
                 strcpy(vector_name, args[0]);
-                strcpy(operator, args[3]);
                 strcpy(term1, args[2]);
+                strcpy(operator, args[3]);
                 strcpy(term2, args[4]);
 
                 // Calculate the index of each vector b and c in the equation, if they exist
-                vect_1_index = getvec(term1, vects, TOTAL_VECTORS);
-                vect_2_index = getvec(term2, vects, TOTAL_VECTORS);
+                vect_1_index = getvec(term1, vects, total_vects);
+                vect_2_index = getvec(term2, vects, total_vects);
 
-                // Error check for invalid vectors for b and c and an invalid operatorusing ASCII, if so, error
-                if ((vect_1_index == -1 || vect_2_index == -1) && (int)operator[0] > 57)
+                // Error check for invalid vectors for b and c and an invalid operator, if so, error
+                if ((vect_1_index == -1 || vect_2_index == -1) && !is_number(operator))
                 {
                     printf("Error, undeclared vectors or invalid operator included.\n");
                     continue;
                 }
 
-                // Error check for invalid vector assignment using a = x y z template and ASCII conversion
-                if (((int)term1[0] > 57 || (int)term2[0] > 57) && ((int)operator[0] > 47 && (int)operator[0] < 58))
+                // Error check for invalid vector assignment using a = x y z template
+                if ((!is_number(term1) || !is_number(term2)) && is_number(operator))
                 {
                     printf("Error, invalid vector assignment, please use numbers.\n");
                     continue;
@@ -146,17 +148,16 @@ int main(int argc, char *argv[])
             } else {
                 // Gather equation data using the template: a OP b
                 strcpy(vector_name, "Result");
-                strcpy(operator, args[1]);
                 strcpy(term1, args[0]);
+                strcpy(operator, args[1]);
                 strcpy(term2, args[2]);
 
                 // Calculate the index of each vector a and b in the equation, if they exist
-                vect_1_index = getvec(term1, vects, TOTAL_VECTORS);
-                vect_2_index = getvec(term2, vects, TOTAL_VECTORS);
+                vect_1_index = getvec(term1, vects, total_vects);
+                vect_2_index = getvec(term2, vects, total_vects);
 
                 // Error checking for invalid input parameters around argument
-                // Are both numbers?
-                if (((int)term1[0] < 58 && (int)term2[0] < 58))
+                if (is_number(term1) && is_number(term2))
                 {
                     printf("Error, invalid input, type 'help' for more info.\n");
                     continue;
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
                 // Error checking for valid input parameters around specific arguments
                 if (!strcmp(operator, "*"))
                 {
-                    if ((vect_1_index == -1 && vect_2_index == -1) || ((int)term1[0] > 57 && (int)term2[0] > 57))
+                    if ((vect_1_index == -1 && vect_2_index == -1) || (!is_number(term1) && !is_number(term2)))
                     {
                         printf("Error, invalid input, type 'help' for more info.\n");
                         continue;
@@ -183,10 +184,16 @@ int main(int argc, char *argv[])
                 continue;
             }
             
-            // Get the vectors to be used in calculations from the vector array
-            vector1 = vects[vect_1_index];
-            vector2 = vects[vect_2_index];
-
+            // Get the vectors to be used in calculations from the vector array if present
+            if (vect_1_index != -1)
+            {
+                vector1 = vects[vect_1_index];
+            }
+            if (vect_2_index != -1)
+            {
+                vector2 = vects[vect_2_index];
+            }
+            
             // Create a new vector that will not be overriden and added to array if no operand is detected
             // using the template of a = x y z
             resultant = newvec(vector_name, atof(args[2]), atof(args[3]), atof(args[4]));
@@ -231,24 +238,30 @@ int main(int argc, char *argv[])
             if (strcmp(vector_name, "Result"))
             {
                 // Declare and calculate index of potentially already existing vector
-                int existing_index = getvec(vector_name, vects, TOTAL_VECTORS);
+                int existing_index = getvec(vector_name, vects, total_vects);
 
                 // If it already exists, overwrite the current vector of the same name with new numbers,
-                // otherwise add into a new index value of the array and increment index tracker
+                // otherwise add into a new index value of the array and increment index tracker with new memory
                 if (existing_index != -1)
                 {
                     vects[existing_index] = resultant;
                 }
                 else
                 {
-                    vects[vector_index] = resultant;
-                    
-                    // If full, do not increment and overwrite the 10th vector with resultant
-                    if (vector_index < TOTAL_VECTORS - 1)
+                    // Create temporary vector array for mem allocation and add new vector to array
+                    vect *new_vects;
+                    total_vects++;
+
+                    // Allocate memory for an extra vector in array with error checking
+                    if ((new_vects = realloc(vects, total_vects * sizeof(vect))) != NULL)
                     {
-                        vector_index++;
-                    } else {
-                        printf("Warning: Max vectors have been reached; writing over 10th vector.\n");
+                        vects = new_vects;
+                        vects[total_vects - 1] = resultant;
+                    }
+                    else
+                    {
+                        total_vects--;
+                        printf("Error: Out of memory or failed to get new memory for array.");
                     }
                 }
             }
@@ -257,9 +270,9 @@ int main(int argc, char *argv[])
             printvec(resultant);
         }
         // If user entered a single input and matches an existing vector name, then print that vector
-        else if (getvec(args[0], vects, TOTAL_VECTORS) != -1)
+        else if (getvec(args[0], vects, total_vects) != -1)
         {
-            printvec(vects[getvec(args[0], vects, TOTAL_VECTORS)]);
+            printvec(vects[getvec(args[0], vects, total_vects)]);
         }
     }
     return 0;
