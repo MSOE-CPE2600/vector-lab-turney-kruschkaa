@@ -37,14 +37,14 @@ vect* read_file(char file_name[100], vect *vects, int *num_vects)
         line[strcspn(line, "\n")] = 0;
 
         // Use strtok to split the line by the comma delimiter
-        token = strtok(line, ",");
+        token = strtok(line, ", ");
 
         // Add name 
         if (token != NULL)
         {
             strcpy(vect_name, token);
         }
-        token = strtok(NULL, ","); // Get the next token
+        token = strtok(NULL, ", "); // Get the next token
         // Process each token (field) in the line
         for (int i = 0; i < 3; i++)
         {
@@ -71,7 +71,31 @@ vect* read_file(char file_name[100], vect *vects, int *num_vects)
     return vects;
 }
 
-int write_file(char file_name[100], vect *vects)
+int write_file(char file_name[100], vect *vects, int num_vects)
 {
+    FILE *fp;
+
+    if (strstr(file_name, ".csv") == NULL)
+    {
+        file_name = strcat(file_name, ".csv");
+    } 
+    
+    fp = fopen(file_name, "w");
+
+    if (!fp)
+    {
+        printf("Error writing file.\n");
+        perror("File Error");
+        return 1;
+    }
+
+    for (int line = 0; line < num_vects; line++)
+    {
+        vect vector = vects[line];
+        fprintf(fp, "%s,%f,%f,%f\n", vector.name, vector.x, vector.y, vector.z);
+    }
+
+    fclose(fp);
+    printf("File '%s' written and saved successfully.\n", file_name);
     return 0;
 }

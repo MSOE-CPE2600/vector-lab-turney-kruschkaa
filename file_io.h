@@ -6,6 +6,6 @@
 
 vect* read_file(char file_name[100], vect *vects, int *num_vects);
 
-int write_file(char file_name[100], vect *vects);
+int write_file(char file_name[100], vect *vects, int num_vects);
 
 #endif
