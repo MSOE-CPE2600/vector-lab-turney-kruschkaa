@@ -154,7 +154,6 @@ int help()
     printf("IMPORTANT: For all commands listed below, you must have a space between the values.\n");
     printf("For reference, 'varname' is the name of a vector and 'OP' is an operand such as +, -, *, ., and x\n");
     printf("To create a new vector or override an existing vector, type: varname = VALx VALy VALz\n");
-    printf("There are ten vector maximum and, when you have reached the limit, the 10th will be continuously overriden for new vectors.\n");
     printf("To create a vector or modify from existing vectors, you may type: varname = varname OR: varname = varname1 OP varname2\n");
     printf("To see the outcome of an operation without saving, just type the operation like this: varname1 OP varname2\n");
     printf("Type 'list' to list all vectors, 'clear' to clear all vectors, 'help' to see this again, or 'quit' to exit the program.\n");
