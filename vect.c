@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 #include "vect.h"
 
@@ -54,7 +55,7 @@ int printvec(vect vector)
     return 0;
 }
 
-vect addvec(char name[30], vect a, vect b)
+vect sumvec(char name[30], vect a, vect b)
 {
     // Add vector components together in a new vector and return that result
     return newvec(name, a.x + b.x, a.y + b.y, a.z + b.z);
@@ -85,6 +86,38 @@ vect crossvec(char name[30], vect a, vect b)
     double new_y = (a.z * b.x) - (a.x * b.z);
     double new_z = (a.x * b.y) - (a.y * b.x);
     return newvec(name, new_x, new_y, new_z);
+}
+
+vect* addvec(vect **vects, int *total_vectors, vect a)
+{
+    // Determine if array already exists and get index if valid
+    int existing_index = getvec(a.name, *vects, *total_vectors);
+
+    // If it already exists, overwrite the current vector of the same name with new numbers,
+    // otherwise add into a new index value of the array and increment index tracker with new memory
+    if (existing_index != -1)
+    {
+        (*vects)[existing_index] = a;
+    }
+    else
+    {
+        // Increase vector count
+        *total_vectors = *total_vectors + 1;
+
+        // Allocate memory for an extra vector in array with error checking
+        vect *new_vects = realloc(*vects, *total_vectors * sizeof(vect));
+        if (new_vects != NULL)
+        {
+            *vects = new_vects;
+            (*vects)[*total_vectors - 1] = a;
+        }
+        else
+        {
+            *total_vectors = *total_vectors - 1;
+            printf("Error: Out of memory or failed to get new memory for array.");
+        }
+    }
+    return *vects;
 }
 
 int list(vect *vects, int total_vectors)

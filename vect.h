@@ -57,7 +57,7 @@ int printvec(vect vector);
  * @param b The second vector to add
  * @return The resultant vector of the sum
  */
-vect addvec(char name[30], vect a, vect b);
+vect sumvec(char name[30], vect a, vect b);
 
 /**
  * @brief Subtracts the components of two vectors together and returns the result
@@ -94,6 +94,8 @@ vect dotvec(char name[30], vect a, vect b);
  * @return The resultant vector of the cross product
  */
 vect crossvec(char name[30], vect a, vect b);
+
+vect* addvec(vect **vects, int *total_vectors, vect a);
 
 /**
  * @brief Prints out the array of vectors

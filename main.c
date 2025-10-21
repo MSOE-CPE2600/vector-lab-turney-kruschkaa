@@ -7,7 +7,7 @@
  * Assignment: Lab 5
  * Name: Alexander Kruschka
  * Date: 10/07/2025
- * Note: Compile with gcc main.c vect.c -g -s -Wall -o minivec OR make
+ * Note: Compile with gcc main.c vect.c input_parsing.c file_io.c -s -Wall -o minivec OR make
  * 
  * Algorithm:
  * - Initiate values and variables
@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include "vect.h"
 #include "input_parsing.h"
+#include "file_io.h"
 
 int main(int argc, char *argv[])
 {
@@ -95,6 +96,20 @@ int main(int argc, char *argv[])
             quit = true;
             continue;
         }
+
+        // Read file into vector array if user enters 'load'
+        if (!strcmp(args[0], "load"))
+        {
+            if (args[1] != NULL)
+            {
+                vects = read_file(args[1], vects, &total_vects);
+            }
+            else
+            {
+                printf("Please enter a file name.");
+                continue;
+            }
+        }
         
         // Display help when user enters 'help'
         if (!strcmp(args[0], "help"))
@@ -117,7 +132,7 @@ int main(int argc, char *argv[])
         }
         
         // Handle all other user commands involving vectors while not exiting program
-        if (!quit && i > 1)
+        if (!quit && i > 2)
         {
             // Is the second term an '=' sign? If so, use a = b OP c, otherwise use a OP b
             if (!strcmp(args[1], "="))
@@ -201,7 +216,7 @@ int main(int argc, char *argv[])
             // If operand is addition, carry out function and overwrite resultant with result
             if (!strcmp(operator, "+"))
             {
-                resultant = addvec(vector_name, vector1, vector2);
+                resultant = sumvec(vector_name, vector1, vector2);
             }
             
             // If operand is subtraction, carry out function and overwrite resultant with result
@@ -237,6 +252,9 @@ int main(int argc, char *argv[])
             // If the vector name isn't 'Result', then it is an assignment to be added to array, otherwise skip
             if (strcmp(vector_name, "Result"))
             {
+                addvec(&vects, &total_vects, resultant);
+                printf("%d", total_vects);
+                /*
                 // Declare and calculate index of potentially already existing vector
                 int existing_index = getvec(vector_name, vects, total_vects);
 
@@ -248,22 +266,9 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    // Create temporary vector array for mem allocation and add new vector to array
-                    vect *new_vects;
                     total_vects++;
-
-                    // Allocate memory for an extra vector in array with error checking
-                    if ((new_vects = realloc(vects, total_vects * sizeof(vect))) != NULL)
-                    {
-                        vects = new_vects;
-                        vects[total_vects - 1] = resultant;
-                    }
-                    else
-                    {
-                        total_vects--;
-                        printf("Error: Out of memory or failed to get new memory for array.");
-                    }
-                }
+                    vects = addvec(vects, total_vects, resultant);
+                }*/
             }
 
             // Print the vector with formatting into console as final product for user

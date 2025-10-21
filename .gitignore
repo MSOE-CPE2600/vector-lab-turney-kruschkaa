@@ -4,3 +4,5 @@
 *.o
 # exe File
 minivec
+# .csv Files
+*.csv
