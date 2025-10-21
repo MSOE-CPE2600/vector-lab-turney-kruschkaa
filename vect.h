@@ -4,9 +4,9 @@
 * 
 * Course: CPE2600
 * Section: 111
-* Assignment: Lab 5
+* Assignment: Lab 7
 * Author: Alexander Kruschka
-* Date: 10/06/2025
+* Date: 10/21/2025
 */
 
 #ifndef VECT_H
@@ -95,6 +95,13 @@ vect dotvec(char name[30], vect a, vect b);
  */
 vect crossvec(char name[30], vect a, vect b);
 
+/**
+ * @brief Adds a vector to an existing array of vectors while managing total vector count
+ * @param vects The array of vectors to be added or modified
+ * @param total_vectors The total number of vectors in the array
+ * @param a The vector to be added to the array
+ * @return The pointer to the new vector array
+ */
 vect* addvec(vect **vects, int *total_vectors, vect a);
 
 /**

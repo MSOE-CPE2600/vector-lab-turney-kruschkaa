@@ -4,9 +4,9 @@
 * 
 * Course: CPE2600
 * Section: 111
-* Assignment: Lab 5
+* Assignment: Lab 7
 * Author: Alexander Kruschka
-* Date: 10/07/2025
+* Date: 10/21/2025
 */
 
 #include <stdio.h>
@@ -104,7 +104,7 @@ vect* addvec(vect **vects, int *total_vectors, vect a)
         // Increase vector count
         *total_vectors = *total_vectors + 1;
 
-        // Allocate memory for an extra vector in array with error checking
+        // Allocate memory for an extra vector in array and add if possible with error checking
         vect *new_vects = realloc(*vects, *total_vectors * sizeof(vect));
         if (new_vects != NULL)
         {
@@ -113,6 +113,7 @@ vect* addvec(vect **vects, int *total_vectors, vect a)
         }
         else
         {
+            // On fail, decrement vector count to original value and print error
             *total_vectors = *total_vectors - 1;
             printf("Error: Out of memory or failed to get new memory for array.");
         }

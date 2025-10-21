@@ -4,9 +4,9 @@
  *
  * Course: CPE2600
  * Section: 111
- * Assignment: Lab 5
+ * Assignment: Lab 7
  * Name: Alexander Kruschka
- * Date: 10/07/2025
+ * Date: 10/21/2025
  * Note: Compile with gcc main.c vect.c input_parsing.c file_io.c -s -Wall -o minivec OR make
  *
  * Algorithm:
@@ -83,6 +83,8 @@ int main(int argc, char *argv[])
         token = strtok(input, ", ");
         for (int i = 0; i < 5; i++)
         {
+            // Add tokens to argument array or set to 0 if null to
+            // be used in error checking (mainly for operator check)
             if (token != NULL)
             {
                 args[i] = token;
@@ -291,7 +293,7 @@ int main(int argc, char *argv[])
             resultant = crossvec(vector_name, vector1, vector2);
         }
 
-        // If the vector name isn't 'Result', then it is an assignment to be added to array, otherwise skip
+        // If the vector name isn't 'Result', then it is a vector to be added to array, otherwise skip
         if (strcmp(vector_name, "Result"))
         {
             addvec(&vects, &total_vects, resultant);
