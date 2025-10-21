@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall
-LDFLAGS=-lm -g
-SOURCES= main.c vect.c input_parsing.c
+LDFLAGS=-lm -s
+SOURCES= main.c vect.c input_parsing.c file_io.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=minivec
 
